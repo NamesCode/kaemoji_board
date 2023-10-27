@@ -32,7 +32,7 @@ fn render_app() -> Result<(), eframe::Error> {
                 let var = [0, 1, 2];
                 for i in var {
                     if ui.button(var[i].to_string()).clicked() {
-                        age += var[i];
+                        ui.output().copied_text = String::from(text);
                     }
                 }
                 ui.label(format!("Hello '{name}', age {age}"));
