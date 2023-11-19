@@ -4,7 +4,7 @@ version = "1.0.0"
 authors = ["Name <lasagna@garfunkles.space>"]
 edition = "2021"
 description = "A simple egui emoji picker for emoticons!"
-license = "GPL-2.0-or-later AND BSD-2-Clause"
+license = "GPL-3.0-or-later"
 
 [dependencies]
 dirs = "5.0.1"
