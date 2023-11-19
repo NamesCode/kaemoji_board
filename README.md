@@ -5,7 +5,7 @@ A simple emoticon board, inspired by the macOS emoji picker! Intended for use wi
 
 ### Prerequisites
 - Rust
-- 
+ 
 ### Installation
 ```bash
 git clone https://github.com/NamesCode/kaemoji_board.git
