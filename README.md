@@ -1,17 +1,17 @@
 # Kaemoji board
 A simple emoticon board, inspired by the macOS emoji picker! Intended for use with Hotkey daemons. 
-## Installation
+
+## Usage 
+
 ### Prerequisites
 - Rust
-
-
+- 
+### Installation
 ```bash
 git clone https://github.com/NamesCode/kaemoji_board.git
 cd kaemoji_board
 cargo install --path .
 ```
-
-## Usage 
 Once installed, run `kaemoji_board`.
 
 ### Config
