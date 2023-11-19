@@ -3,12 +3,10 @@
 use eframe::egui;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use std::fs::File;
+use std::fs::{create_dir, File};
 use std::io;
 use std::io::BufReader;
 use std::io::Write;
-use std::path::Path;
-use std::path::PathBuf;
 
 #[derive(Serialize, Deserialize)]
 struct KaemojiData {
@@ -59,25 +57,28 @@ impl Default for KaemojiConfig {
 }
 
 fn main() {
+    if let Err(error) = egui_render_app(read_config()) {
+        panic!("SHIT, problem rendering app: {:?}", error);
+    }
+    read_config();
+}
+
+//fn read_file<P: AsRef<Path>>(path: P) -> Result<KaemojiData, io::Error> {  TODO: error handling
+fn read_config() -> KaemojiConfig {
     #[cfg(not(any(target_os = "macos", target_os = "ios")))]
     let config_path: PathBuf = dirs::config_dir().unwrap();
     #[cfg(any(target_os = "macos", target_os = "ios"))]
     let config_path = dirs::home_dir().unwrap().join(".config");
-    let config_path = config_path.join("kaemoji_board/KaemojiConfig.json");
-
-    let config: KaemojiConfig = read_file(config_path.as_path());
-
-    if let Err(error) = egui_render_app(config) {
-        panic!("SHIT, problem rendering app: {:?}", error);
+    let config_path = config_path.join("kaemoji_board");
+    if !config_path.exists() {
+        create_dir(&config_path);
     }
-}
+    let config_file = config_path.join("KaemojiConfig.json");
 
-//fn read_file<P: AsRef<Path>>(path: P) -> Result<KaemojiData, io::Error> {  TODO: error handling
-fn read_file<P: AsRef<Path>>(path: P) -> KaemojiConfig {
-    match File::open(&path) {
+    match File::open(&config_file) {
         Ok(file) => serde_json::from_reader(BufReader::new(file)).unwrap(),
         Err(error) if error.kind() == io::ErrorKind::NotFound => {
-            File::create(path)
+            File::create(config_file)
                 .unwrap()
                 .write_all(
                     serde_json::to_string_pretty(&KaemojiConfig::default())
