@@ -1,6 +1,9 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")] // hide console window on Windows in release
 
-use eframe::egui;
+mod gui;
+
+use gui::render_app;
+
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::fs::{create_dir, File};
@@ -33,7 +36,7 @@ impl Default for KaemojiData {
 }
 
 #[derive(Serialize, Deserialize)]
-struct KaemojiConfig {
+pub struct KaemojiConfig {
     kaemojis: HashMap<String, Vec<KaemojiData>>,
 }
 
@@ -57,9 +60,7 @@ impl Default for KaemojiConfig {
 }
 
 fn main() {
-    if let Err(error) = egui_render_app(read_config()) {
-        panic!("SHIT, problem rendering app: {:?}", error);
-    }
+    render_app(read_config());
     read_config();
 }
 
@@ -90,43 +91,4 @@ fn read_config() -> KaemojiConfig {
         }
         Err(error) => panic!("SHIT, problem reading file: {:?}", error),
     }
-}
-
-fn egui_render_app(uidata: KaemojiConfig) -> Result<(), eframe::Error> {
-    let options = eframe::NativeOptions {
-        initial_window_size: Some(egui::vec2(240.0, 120.0)),
-        ..Default::default()
-    };
-
-    eframe::run_simple_native("Kaemoji board", options, move |ctx, frame| {
-        egui::CentralPanel::default().show(ctx, |ui| {
-            ui.heading("Kaemoji board");
-
-            for (heading, kaemojis) in uidata.kaemojis.iter() {
-                ui.collapsing(heading, |ui| {
-                    egui::ScrollArea::vertical().show(ui, |ui| {
-                        ui.with_layout(
-                            egui::Layout::with_main_wrap(
-                                // adds the button wrapping
-                                egui::Layout::left_to_right(egui::Align::TOP), // sets the button alignment
-                                // to be left to right
-                                true,
-                            ),
-                            |ui| {
-                                for kaemoji in kaemojis {
-                                    if ui.button(&kaemoji.emoticon).clicked() {
-                                        ui.output_mut(|o| {
-                                            o.copied_text = kaemoji.emoticon.clone()
-                                            // copies the text of the current kaemoji to clipboard
-                                        });
-                                        frame.close() // closes app
-                                    }
-                                }
-                            },
-                        );
-                    });
-                });
-            }
-        });
-    })
 }

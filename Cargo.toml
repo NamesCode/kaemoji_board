@@ -7,6 +7,7 @@ description = "A simple egui emoji picker for emoticons!"
 license = "GPL-3.0-or-later"
 
 [dependencies]
+cacao = "0.3.2"
 dirs = "5.0.1"
 eframe = "0.23.0"
 egui = "0.23.0"
