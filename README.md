@@ -32,3 +32,7 @@ Example config:
   }
 }
 ```
+
+## Support
+
+For support, you can ask in [my discord server here!](https://discord.gg/yvZF6cX9BD)
